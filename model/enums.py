@@ -11,3 +11,8 @@ class TipoInimigo(Enum):
     GOBLIN = 'Goblin'
     DRAGAO = 'Dragão'
 
+class StatusMissao(Enum):
+    PENDENTE = "Pendente"
+    EM_ANDAMENTO ="Em andamento"
+    CONCLUIDA = "Conluída"
+
