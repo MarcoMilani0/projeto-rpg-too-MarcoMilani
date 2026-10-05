@@ -14,5 +14,5 @@ class TipoInimigo(Enum):
 class StatusMissao(Enum):
     PENDENTE = "Pendente"
     EM_ANDAMENTO ="Em andamento"
-    CONCLUIDA = "Conluída"
+    CONCLUIDA = "Concluída"
 

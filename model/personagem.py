@@ -1,12 +1,12 @@
 class Personagem: 
     def __init__(self, nome, vida, vida_maxima, ataque, defesa): 
-            self.__nome = nome
-            self.__vida = vida
-            self.__vida_maxima = vida_maxima
-            self.__ataque = ataque
-            self.__defesa = defesa
-            self.__nivel = 1
-            self.__xp = 0
+        self.__nome = nome
+        self.__vida = vida
+        self.__vida_maxima = vida_maxima
+        self.__ataque = ataque
+        self.__defesa = defesa
+        self.__nivel = 1
+        self.__xp = 0
 
     @property
     def nivel(self): 
@@ -74,6 +74,14 @@ class Personagem:
             self.__nivel += 1
             self._aumentar_atributos()
             print(f'{self.nome} subiu para o nível {self.nivel}!')
+    def perder_experiencia(self, quantidade):
+        if quantidade <= 0:
+            return
+        
+        if self.xp - quantidade < 0:
+            self.xp = 0
+        else:
+            self.xp -= quantidade
 
     def _aumentar_atributos(self):
         self.__vida_maxima += 10          

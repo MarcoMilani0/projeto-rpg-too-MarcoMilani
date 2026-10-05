@@ -1,8 +1,9 @@
-#Com o avançar do jogo as recompensas das missoes são aumentadas para balancear o jogo 
-#O status vai mudar com o avançar do jogo
-#Nome e descrição são fixos
+# Com o avançar do jogo as recompensas das missoes são aumentadas para balancear o jogo 
+# O status vai mudar com o avançar do jogo
+# Nome e descrição são fixos
 import random
 from model.enums import StatusMissao
+
 class Missao:
     def __init__(self, nome, descricao, recompensa):
         self.__nome = nome
@@ -13,21 +14,26 @@ class Missao:
     @property
     def nome(self):
         return self.__nome
+
     @property
     def descricao(self):
         return self.__descricao
+
     @property
     def recompensa(self):
         return self.__recompensa
+
     @recompensa.setter 
     def recompensa(self, valor):
         if valor < 0:
             print("Recompensa de missão não pode ser negativa")
         else:
-            self.__recompensa = valor;
+            self.__recompensa = valor
+
     @property
     def status(self):
         return self.__status
+
     @status.setter
     def status(self, valor):
         if not isinstance(valor, StatusMissao):
@@ -43,7 +49,6 @@ class Missao:
             raise ValueError("Missão já concluída, não é possível alterar o status")
 
         self.__status = valor
-        
 
     def iniciar_missao(self):
         if self.status == StatusMissao.PENDENTE:
@@ -60,17 +65,27 @@ Descrição: {self.descricao}
 Recompensa: {self.recompensa}
 Status: {self.status.value}
 '''
-
         return msg
+
     def calcular_recompensa(self):
         if self.status is not StatusMissao.CONCLUIDA:
             return 0
         return self.recompensa
-    
+
     def __str__(self):
         return f'missão [{self.__class__.__name__}]: {self.nome} | status: {self.status.value}'
 
-class Entregra(Missao):
+    def concluir_missao(self, heroi):
+        if self.status == StatusMissao.PENDENTE:
+            self.status = StatusMissao.EM_ANDAMENTO
+        if self.status == StatusMissao.EM_ANDAMENTO:
+            self.status = StatusMissao.CONCLUIDA
+
+        xp_recompensa = self.calcular_recompensa()
+        heroi.ganhar_experiencia(xp_recompensa)
+
+
+class Entrega(Missao):
     # O tempo da missão varia a recompensa: entregas mais longas (maior
     # duração) aumentam a recompensa em XP. Duração é o atributo próprio
     # que pode mudar após a criação (ajuste de prazo), dentro de um limite.
@@ -88,7 +103,7 @@ class Entregra(Missao):
         if valor <= 0:
             raise ValueError("A duração da missão não pode ser menor ou igual a 0")
         elif valor > 10:
-            print ("A duração não pode ultrapassar 10 horas, valor ajustado para 10 horas")
+            print("A duração não pode ultrapassar 10 horas, valor ajustado para 10 horas")
             self.__duracao = 10
         else:
             self.__duracao = valor
@@ -98,6 +113,8 @@ class Entregra(Missao):
         if base == 0:
             return 0
         return base + 10 * self.duracao
+
+
 class Cassino(Missao):
     # Aposta de XP pode mudar antes de apostar; sorte começa em 50 e cai a
     # cada vitória. Resultado da última aposta (ganho ou perda) é o que
@@ -157,7 +174,17 @@ class Cassino(Missao):
         if base == 0:
             return 0
         return base + self.resultado_aposta
-class Cacada(Missao):
+
+    def concluir_missao(self, heroi):
+        if self.status == StatusMissao.PENDENTE:
+            self.status = StatusMissao.EM_ANDAMENTO
+
+        if self.status == StatusMissao.EM_ANDAMENTO:
+            self.apostar(heroi)
+            super().concluir_missao(heroi)
+
+
+class Caçada(Missao):
     # Quantidade de inimigos na caçada determina o bônus de recompensa:
     # cada inimigo enfrentado paga 10 de XP extra ao concluir a missão.
 
@@ -201,7 +228,6 @@ class Cacada(Missao):
             xp_desta_vitoria += self.__incremento_xp
 
         if personagem.esta_vivo():
-            self.status = StatusMissao.CONCLUIDA
             print(f'{personagem.nome} sobreviveu à caçada inteira!')
 
     def calcular_recompensa(self):
@@ -209,3 +235,11 @@ class Cacada(Missao):
         if base == 0:
             return 0
         return base + 10 * self.quantidade_inimigos
+
+    def concluir_missao(self, heroi):
+        if self.status == StatusMissao.PENDENTE:
+            self.status = StatusMissao.EM_ANDAMENTO
+
+        if self.status == StatusMissao.EM_ANDAMENTO:
+            self.cacar(heroi)
+            super().concluir_missao(heroi)
