@@ -36,6 +36,12 @@ class Personagem:
     def defesa(self):
         return self.__defesa
 
+    @xp.setter
+    def xp(self, valor):
+        if valor < 0:
+            self.__xp = 0
+        else:
+            self.__xp = valor
     @vida.setter
     def vida(self, valor):
         if valor < 0:
