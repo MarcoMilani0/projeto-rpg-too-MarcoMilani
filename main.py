@@ -37,8 +37,11 @@ def main():
     print("Atributos depois da missão: ")
     print(heroi.exibir_dados()) 
 
-    print("Teste operação invalida: ")
+    print("Teste operação inválida: ")
     missao_erro = Entrega("Missão Teste", "Testando transição proibida", 50, 3)
-    missao_erro.status = StatusMissao.CONCLUIDA
+    try:
+        missao_erro.status = StatusMissao.CONCLUIDA
+    except (TypeError, ValueError) as erro:
+        print(f"Erro capturado: {erro}")
 
 main()

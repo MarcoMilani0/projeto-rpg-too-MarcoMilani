@@ -153,12 +153,10 @@ class Cassino(Missao):
             self.__sorte = valor
 
     def apostar(self, personagem):
-        personagem.perder_experiencia(self.aposta)
         numero = random.randint(0, 100)
 
         if numero > self.sorte:
             ganho = self.aposta * 1.5
-            personagem.ganhar_experiencia(ganho)
             self.sorte -= 2
             self.__resultado_aposta = ganho
             print(f'Ganhou: {ganho}, e sua sorte foi diminuída')
@@ -169,19 +167,13 @@ class Cassino(Missao):
 
         return self.__resultado_aposta
 
-    def calcular_recompensa(self):
-        base = super().calcular_recompensa()
-        if base == 0:
-            return 0
-        return base + self.resultado_aposta
-
     def concluir_missao(self, heroi):
         if self.status == StatusMissao.PENDENTE:
             self.status = StatusMissao.EM_ANDAMENTO
 
         if self.status == StatusMissao.EM_ANDAMENTO:
-            self.apostar(heroi)
-            super().concluir_missao(heroi)
+            self.apostar(heroi)              # só calcula o resultado, não mexe no XP ainda
+            super().concluir_missao(heroi) 
 
 
 class Caçada(Missao):
